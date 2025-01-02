@@ -8,6 +8,8 @@ const FormPembayaran = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const totalPrice = location.state?.totalPrice;
+  const taxRate = 0.12; // Pajak 12%
+  const totalafterpajak = totalPrice * (1 + taxRate);
 
   const [selectedCategoryBayar, setSelectedCategoryBayar] = useState("");
   const [buyerInfo, setBuyerInfo] = useState({
@@ -33,8 +35,30 @@ const FormPembayaran = () => {
     if (selectedCategoryBayar === "cash") {
       navigate("/PaymentSuccess");
     } else if (selectedCategoryBayar === "kredit") {
-      alert("kredit");
+      alert("Terima Kasih Telah Melakukan Pembayaran dengan Metode Kredit");
     }
+  };
+
+  const calculateInstallment = () => {
+    const dp = parseFloat(buyerInfo.dp) || 0; // Mengambil DP
+    const tenor = parseInt(buyerInfo.tenor) || 0; // Mengambil tenor
+
+    if (tenor > 0) {
+      const installment = (totalPrice - dp) / tenor;
+      return installment.toLocaleString(); // Mengembalikan nilai angsuran dengan dua desimal
+    }
+    return 0;
+  };
+
+  const BayarAfterPajak = () => {
+    const dp = parseFloat(buyerInfo.dp) || 0; // Mengambil DP
+    const tenor = parseInt(buyerInfo.tenor) || 0; // Mengambil tenor
+
+    if (tenor > 0) {
+      const installment = (totalafterpajak - dp) / tenor;
+      return installment.toLocaleString(); // Mengembalikan nilai angsuran dengan dua desimal
+    }
+    return 0;
   };
 
   return (
@@ -149,6 +173,19 @@ const FormPembayaran = () => {
                   onChange={handleInputChange}
                 />
               ))}
+
+              {buyerInfo.tenor && (
+                <>
+                  <div style={{ marginTop: "10px" }}>
+                    <strong>Total Angsuran per Bulan Sebelum Pajak:</strong>{" "}
+                    {calculateInstallment()} IDR
+                  </div>
+                  <div>
+                    <strong>Total Angsuran per Bulan Setelah Pajak 12%:</strong>{" "}
+                    {BayarAfterPajak()} IDR
+                  </div>
+                </>
+              )}
 
               <Button
                 variant="primary"
