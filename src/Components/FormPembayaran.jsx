@@ -33,9 +33,7 @@ const FormPembayaran = () => {
     if (selectedCategoryBayar === "cash") {
       navigate("/PaymentSuccess");
     } else if (selectedCategoryBayar === "kredit") {
-      // Logika untuk memproses pembayaran kredit
-      console.log("Proses pembayaran kredit:", buyerInfo);
-      // Anda bisa menambahkan logika lain di sini
+      alert("kredit");
     }
   };
 
